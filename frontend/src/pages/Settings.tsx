@@ -14,6 +14,7 @@ export default function Settings() {
 
   const { data: planConfig } = useQuery({ queryKey: ['planConfig'], queryFn: api.planConfig.get })
   const { data: anthropicKey } = useQuery({ queryKey: ['anthropicKey'], queryFn: api.settings.anthropicKeyStatus })
+  const { data: geminiKey } = useQuery({ queryKey: ['geminiKey'], queryFn: api.settings.geminiKeyStatus })
   // Unsaved edits live in `draft`; null means "show whatever the server has".
   const [draft, setDraft] = useState<{ inPct: number; oonPct: number } | null>(null)
   const inPct = draft?.inPct ?? planConfig?.in_network_coinsurance_pct ?? 10
@@ -101,18 +102,36 @@ export default function Settings() {
         </div>
       </div>
       <div className="bg-white border rounded-lg p-6 shadow-sm mb-6">
-        <h2 className="font-semibold text-gray-900 mb-1">Anthropic API Key</h2>
-        <p className="text-sm text-gray-500 mb-3">Used for PDF auto-fill on new submissions.</p>
-        <div className="flex items-center gap-2 text-sm">
-          {anthropicKey?.configured ? (
-            <span className="text-green-700 font-medium">✓ Configured</span>
-          ) : (
-            <span className="text-gray-500 font-medium">● Not configured</span>
-          )}
+        <h2 className="font-semibold text-gray-900 mb-1">PDF Auto-Fill API Keys</h2>
+        <p className="text-sm text-gray-500 mb-4">Used for PDF auto-fill on new submissions (Gemini or Anthropic).</p>
+        <div className="space-y-4">
+          <div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-700 font-medium">Gemini API Key</span>
+              {geminiKey?.configured ? (
+                <span className="text-green-700 font-medium">✓ Configured</span>
+              ) : (
+                <span className="text-gray-500 font-medium">● Not configured</span>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Set it in the terminal: <code className="bg-gray-100 px-1 rounded">backend/.venv/bin/python deploy/store_credentials.py --gemini</code>
+            </p>
+          </div>
+          <div className="pt-3 border-t border-gray-100">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-700 font-medium">Anthropic API Key</span>
+              {anthropicKey?.configured ? (
+                <span className="text-green-700 font-medium">✓ Configured</span>
+              ) : (
+                <span className="text-gray-500 font-medium">● Not configured</span>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Set it in the terminal: <code className="bg-gray-100 px-1 rounded">backend/.venv/bin/python deploy/store_credentials.py --anthropic</code>
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-gray-400 mt-2">
-          Set it in the terminal: <code className="bg-gray-100 px-1 rounded">backend/.venv/bin/python deploy/store_credentials.py --anthropic</code>
-        </p>
       </div>
       <div className="bg-white border rounded-lg p-6 shadow-sm">
         <h2 className="font-semibold text-gray-900 mb-1">Alert Thresholds</h2>

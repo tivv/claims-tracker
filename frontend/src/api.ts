@@ -145,5 +145,6 @@ export const api = {
   },
   settings: {
     anthropicKeyStatus: () => req<AnthropicKeyStatus>('/settings/anthropic-key'),
+    geminiKeyStatus: () => req<AnthropicKeyStatus>('/settings/gemini-key'),
   },
 }

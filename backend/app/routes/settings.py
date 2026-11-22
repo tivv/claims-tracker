@@ -42,6 +42,11 @@ def anthropic_key_status():
     return AnthropicKeyStatus(configured=credentials.get_anthropic_key() is not None)
 
 
+@router.get("/settings/gemini-key", response_model=AnthropicKeyStatus)
+def gemini_key_status():
+    return AnthropicKeyStatus(configured=credentials.get_gemini_key() is not None)
+
+
 def _get_or_create_plan_config(db: Session) -> PlanConfig:
     cfg = db.get(PlanConfig, 1)
     if cfg is None:

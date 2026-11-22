@@ -39,3 +39,19 @@ def get_anthropic_key() -> str | None:
     except KeyringError:
         return None
     return key or None
+
+
+GEMINI_SERVICE = "claims-tracker-gemini"
+_GEMINI_KEY = "api_key"
+
+
+def store_gemini_key(key: str) -> None:
+    keyring.set_password(GEMINI_SERVICE, _GEMINI_KEY, key)
+
+
+def get_gemini_key() -> str | None:
+    try:
+        key = keyring.get_password(GEMINI_SERVICE, _GEMINI_KEY)
+    except KeyringError:
+        return None
+    return key or None

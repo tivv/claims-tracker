@@ -69,3 +69,26 @@ def test_anthropic_key_none_when_keychain_locked(monkeypatch):
 def test_get_credentials_none_when_keychain_locked(monkeypatch):
     monkeypatch.setattr(creds, "keyring", _LockedKeyring())
     assert creds.get_credentials() is None
+
+
+def test_gemini_key_roundtrip(monkeypatch):
+    monkeypatch.setattr(creds, "keyring", _FakeKeyring())
+    creds.store_gemini_key("AIza-gemini-123")
+    assert creds.get_gemini_key() == "AIza-gemini-123"
+
+
+def test_gemini_key_none_when_unset(monkeypatch):
+    monkeypatch.setattr(creds, "keyring", _FakeKeyring())
+    assert creds.get_gemini_key() is None
+
+
+def test_gemini_key_none_when_empty(monkeypatch):
+    fake = _FakeKeyring()
+    monkeypatch.setattr(creds, "keyring", fake)
+    fake.set_password(creds.GEMINI_SERVICE, "api_key", "")
+    assert creds.get_gemini_key() is None
+
+
+def test_gemini_key_none_when_keychain_locked(monkeypatch):
+    monkeypatch.setattr(creds, "keyring", _LockedKeyring())
+    assert creds.get_gemini_key() is None

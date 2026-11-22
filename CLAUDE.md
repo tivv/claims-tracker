@@ -112,12 +112,12 @@ npm run lint
 - **`config.py`** — `plan_year_dates(year: int) -> (date, date)` returns Jan 1 / Dec 31
   for any calendar year. All list/totals endpoints accept a `year` query param (defaults
   to current year).
-- **`extraction.py`** — sends an uploaded claim PDF to Claude (`claude-sonnet-4-6`) to
-  prefill member/provider/first-service-date/billed. The Anthropic API key resolves
-  **Keychain → `ANTHROPIC_API_KEY` env var** and is set via
-  `deploy/store_credentials.py --anthropic`. Returns `configured=False` when no key is set
-  so the UI falls back to manual entry. Expected reimbursement is computed client-side,
-  not extracted.
+- **`extraction.py`** — sends an uploaded claim PDF to Gemini (`gemini-flash-latest`,
+  overridable via `GEMINI_MODEL`) or Claude (`claude-sonnet-4-6`) to prefill
+  member/provider/first-service-date/billed. API keys resolve **Keychain → env var** (`GEMINI_API_KEY` / `GOOGLE_API_KEY` or
+  `ANTHROPIC_API_KEY`) and are set via `deploy/store_credentials.py --gemini` or
+  `--anthropic`. Returns `configured=False` when no key is set so the UI falls back to
+  manual entry. Expected reimbursement is computed client-side, not extracted.
 
 ### Plan year filtering
 
@@ -370,10 +370,10 @@ advance a draft.
 - `automation.py:run_automation()` resolves creds via `_resolve_credentials()` (passed-in
   args first, else Keychain) and injects them as `ANTHEM_USERNAME`/`ANTHEM_PASSWORD` env
   vars into the subprocess. The backend never logs or stores them.
-- The Anthropic API key lives in a **separate Keychain service**
-  (`claims-tracker-anthropic`), set with
-  `backend/.venv/bin/python deploy/store_credentials.py --anthropic`. Settings shows its
-  configured status read-only — the key never crosses the web layer.
+- The Gemini and Anthropic API keys live in **separate Keychain services**
+  (`claims-tracker-gemini` and `claims-tracker-anthropic`), set with
+  `backend/.venv/bin/python deploy/store_credentials.py --gemini` or `--anthropic`.
+  Settings shows their configured status read-only — keys never cross the web layer.
 
 ### Refresh page / automation UX
 

@@ -4,6 +4,8 @@ Anthem (default):
     backend/.venv/bin/python deploy/store_credentials.py
 Anthropic API key (PDF auto-fill):
     backend/.venv/bin/python deploy/store_credentials.py --anthropic
+Gemini API key (PDF auto-fill):
+    backend/.venv/bin/python deploy/store_credentials.py --gemini
 """
 import getpass
 import sys
@@ -23,6 +25,15 @@ def _store_anthropic() -> None:
     print(f"Stored Anthropic API key in the Keychain (service: {credentials.ANTHROPIC_SERVICE}).")
 
 
+def _store_gemini() -> None:
+    key = getpass.getpass("Gemini API key: ").strip()
+    if not key:
+        print("No key entered; nothing stored.")
+        sys.exit(1)
+    credentials.store_gemini_key(key)
+    print(f"Stored Gemini API key in the Keychain (service: {credentials.GEMINI_SERVICE}).")
+
+
 def _store_anthem() -> None:
     username = input("Anthem email: ").strip()
     password = getpass.getpass("Anthem password: ")
@@ -36,5 +47,7 @@ def _store_anthem() -> None:
 if __name__ == "__main__":
     if "--anthropic" in sys.argv[1:]:
         _store_anthropic()
+    elif "--gemini" in sys.argv[1:]:
+        _store_gemini()
     else:
         _store_anthem()

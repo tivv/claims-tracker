@@ -231,7 +231,10 @@ def test_extract_returns_not_configured_without_key(client, monkeypatch):
     # The key resolves Keychain -> env var, so neutralize both. Without the
     # Keychain stub this test fails on any machine that has a real key stored.
     monkeypatch.setattr("app.extraction.credentials.get_anthropic_key", lambda: None)
+    monkeypatch.setattr("app.extraction.credentials.get_gemini_key", lambda: None)
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
     resp = client.post(
         "/api/submissions/extract",
         files={"file": ("claim.pdf", b"%PDF-1.4 fake", "application/pdf")},
